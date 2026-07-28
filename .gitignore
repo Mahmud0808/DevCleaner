@@ -1,0 +1,9 @@
+node_modules
+out
+dist
+release
+.vite
+*.log
+.DS_Store
+Thumbs.db
+tsconfig.tsbuildinfo
