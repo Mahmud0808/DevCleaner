@@ -63,7 +63,8 @@ Download the installer for your platform from the repository's Releases page:
 
 | Platform | File |
 | --- | --- |
-| Windows | `devcleaner-<version>-setup.exe` |
+| Windows (installer) | `devcleaner-<version>-setup.exe` — lets you choose the install folder |
+| Windows (portable) | `devcleaner-<version>-portable.exe` — single file, unpacks to `%TEMP%` on each run |
 | macOS (Apple Silicon) | `Dev Cleaner-<version>-arm64.dmg` |
 | macOS (Intel) | `Dev Cleaner-<version>.dmg` |
 | Linux | `Dev Cleaner-<version>.AppImage` |
@@ -75,9 +76,6 @@ Builds are **unsigned**, so the OS will warn on first launch:
   `xattr -dr com.apple.quarantine "/Applications/Dev Cleaner.app"` once.
 - **Linux** — mark the AppImage executable: `chmod +x 'Dev Cleaner-<version>.AppImage'`.
 
-Signing is optional and costs money on both platforms; see [Releasing](#releasing) for what it would
-take.
-
 ### From source
 
 ```bash
@@ -88,6 +86,12 @@ npm run dev
 ```
 
 Requires Node.js 20 or newer.
+
+### Nothing happens on launch
+
+On a few Windows systems the app cannot start from inside your user profile. Install it somewhere
+else, such as `D:\Programs\Dev Cleaner` — the installer lets you choose the folder. To keep it where
+it is, add `--disable-gpu-sandbox` to the shortcut's target.
 
 ## Usage
 
@@ -240,8 +244,11 @@ Two ways to run it:
   Review the draft under Releases, then publish it. Nothing goes public automatically.
 
 The macOS job builds both architectures (`--x64 --arm64`), producing an Intel and an Apple Silicon
-dmg. `CSC_IDENTITY_AUTO_DISCOVERY: false` keeps electron-builder from attempting to sign, which is
-what would otherwise fail on a runner with no certificate.
+dmg. `CSC_IDENTITY_AUTO_DISCOVERY: false` stops electron-builder looking for a signing certificate
+the runner does not have.
+
+Packaging downloads a 115 MB Electron binary, so the job caches it per platform and retries
+packaging up to three times to ride out a dropped download.
 
 ### Signing and notarisation, if you ever want it
 

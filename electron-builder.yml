@@ -18,7 +18,6 @@ win:
   target:
     - nsis
     - portable
-    - zip
 portable:
   artifactName: ${name}-${version}-portable.${ext}
 nsis:
@@ -26,6 +25,9 @@ nsis:
   shortcutName: ${productName}
   uninstallDisplayName: ${productName}
   createDesktopShortcut: always
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
   installerIcon: build/icon.ico
   uninstallerIcon: build/icon.ico
 mac:
