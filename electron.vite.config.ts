@@ -1,6 +1,20 @@
 import { resolve } from 'path'
 import { defineConfig, externalizeDepsPlugin } from 'electron-vite'
 import react from '@vitejs/plugin-react'
+import type { Plugin } from 'vite'
+
+function fileProtocolHtml(): Plugin {
+  return {
+    name: 'dev-cleaner:file-protocol-html',
+    apply: 'build',
+    enforce: 'post',
+    transformIndexHtml(html) {
+      return html
+        .replace(/\s+crossorigin(?==|\s|>)/g, '')
+        .replace(/<script\s+type="module"\s+/g, '<script defer ')
+    }
+  }
+}
 
 export default defineConfig({
   main: {
@@ -37,10 +51,12 @@ export default defineConfig({
         '@shared': resolve(__dirname, 'src/shared')
       }
     },
-    plugins: [react()],
+    plugins: [react(), fileProtocolHtml()],
     build: {
+      modulePreload: false,
       rollupOptions: {
-        input: { index: resolve(__dirname, 'src/renderer/index.html') }
+        input: { index: resolve(__dirname, 'src/renderer/index.html') },
+        output: { format: 'iife', inlineDynamicImports: true }
       }
     }
   }

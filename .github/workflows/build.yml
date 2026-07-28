@@ -10,6 +10,7 @@ jobs:
   build:
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
@@ -17,12 +18,21 @@ jobs:
           - name: Windows
             os: windows-latest
             flags: --win
+            cache: |
+              ~\AppData\Local\electron\Cache
+              ~\AppData\Local\electron-builder\Cache
           - name: macOS
             os: macos-latest
             flags: --mac --x64 --arm64
+            cache: |
+              ~/Library/Caches/electron
+              ~/Library/Caches/electron-builder
           - name: Linux
             os: ubuntu-latest
             flags: --linux
+            cache: |
+              ~/.cache/electron
+              ~/.cache/electron-builder
 
     steps:
       - uses: actions/checkout@v4
@@ -32,15 +42,38 @@ jobs:
           node-version: 20
           cache: npm
 
+      - name: Cache Electron binaries
+        uses: actions/cache@v4
+        with:
+          path: ${{ matrix.cache }}
+          key: electron-${{ matrix.os }}-${{ hashFiles('package-lock.json') }}
+          restore-keys: electron-${{ matrix.os }}-
+
       - run: npm ci
 
       - name: Typecheck and bundle
         run: npm run build
 
       - name: Package
-        run: npx electron-builder ${{ matrix.flags }} --publish never
+        shell: bash
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: false
+        run: |
+          for attempt in 1 2 3; do
+            echo "::group::electron-builder attempt $attempt"
+            if npx electron-builder ${{ matrix.flags }} --publish never; then
+              echo "::endgroup::"
+              exit 0
+            fi
+            echo "::endgroup::"
+            if [ "$attempt" -lt 3 ]; then
+              delay=$((attempt * 20))
+              echo "Packaging failed, retrying in ${delay}s (usually a dropped Electron download)"
+              sleep "$delay"
+            fi
+          done
+          echo "electron-builder failed after 3 attempts" >&2
+          exit 1
 
       - uses: actions/upload-artifact@v4
         with:

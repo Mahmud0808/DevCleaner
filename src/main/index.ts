@@ -63,7 +63,21 @@ function createWindow(): void {
     }
   })
 
-  mainWindow.on('ready-to-show', () => mainWindow?.show())
+  const reveal = (): void => {
+    if (mainWindow && !mainWindow.isDestroyed() && !mainWindow.isVisible()) mainWindow.show()
+  }
+
+  mainWindow.on('ready-to-show', reveal)
+  mainWindow.webContents.on('did-finish-load', reveal)
+  mainWindow.webContents.on('did-fail-load', (_event, code, description, url) => {
+    console.error(`Renderer failed to load: ${description} (${code}) ${url}`)
+    reveal()
+  })
+  mainWindow.webContents.on('render-process-gone', (_event, details) => {
+    console.error(`Renderer process gone: ${details.reason}`)
+    reveal()
+  })
+
   mainWindow.on('closed', () => {
     mainWindow = null
   })
