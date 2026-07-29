@@ -1,7 +1,7 @@
 # Dev Cleaner
 
 A desktop app that reclaims disk space by removing build output, caches and dependency folders
-from your projects — without ever touching source code.
+from your projects - without ever touching source code.
 
 Point it at a folder, see exactly what it found and how large each item is, uncheck anything worth
 keeping, then delete.
@@ -42,13 +42,13 @@ Everything else follows from that rule:
   drains it, so you can see what each decision is worth.
 - **Tree view with checkboxes** at category, project and folder level, with tri-state parents,
   per-item file counts, age and share of the project.
-- **Live scan feedback** — folders read, items flagged, bytes measured, elapsed time and a
+- **Live scan feedback** - folders read, items flagged, bytes measured, elapsed time and a
   streaming feed of what was just found. Stop at any time and keep the partial result.
 - **Real deletion progress.** Deleting a large `node_modules` reports every file as it goes, with a
   determinate bar measured against the file count from the scan rather than a spinner.
 - **Granular, persistent settings.** Switch off a whole project type, or single folder names inside
   it. Saved to disk and reapplied on the next launch.
-- **Protected paths.** Right-click any result and choose *Never clean this folder* or *Never clean
+- **Protected paths.** Right-click any result and choose _Never clean this folder_ or *Never clean
   this project*. Protected paths are excluded from every future scan and refused by the deleter.
 - **Right-click menu** on any row: reveal in the OS file manager, copy the path, check or uncheck,
   or protect it.
@@ -71,10 +71,10 @@ Download the installer for your platform from the repository's Releases page:
 
 Builds are **unsigned**, so the OS will warn on first launch:
 
-- **Windows** — SmartScreen shows "unrecognised app". Choose *More info* → *Run anyway*.
-- **macOS** — Gatekeeper refuses a double-click. Right-click the app → *Open*, then confirm. Or run
+- **Windows** - SmartScreen shows "unrecognised app". Choose _More info_ → _Run anyway_.
+- **macOS** - Gatekeeper refuses a double-click. Right-click the app → _Open_, then confirm. Or run
   `xattr -dr com.apple.quarantine "/Applications/Dev Cleaner.app"` once.
-- **Linux** — mark the AppImage executable: `chmod +x 'Dev Cleaner-<version>.AppImage'`.
+- **Linux** - mark the AppImage executable: `chmod +x 'Dev Cleaner-<version>.AppImage'`.
 
 ### From source
 
@@ -90,17 +90,17 @@ Requires Node.js 20 or newer.
 ### Nothing happens on launch
 
 On a few Windows systems the app cannot start from inside your user profile. Install it somewhere
-else, such as `D:\Programs\Dev Cleaner` — the installer lets you choose the folder. To keep it where
+else, such as `D:\Programs\Dev Cleaner` - the installer lets you choose the folder. To keep it where
 it is, add `--disable-gpu-sandbox` to the shortcut's target.
 
 ## Usage
 
-1. **Choose folder** — pick the directory holding your projects (for example `~/dev`).
-2. **Scan this folder** — the walker finds project markers, then measures every flagged folder.
+1. **Choose folder** - pick the directory holding your projects (for example `~/dev`).
+2. **Scan this folder** - the walker finds project markers, then measures every flagged folder.
    Press `Esc` or **Stop** to cancel; measured results are kept.
-3. **Review the tree** — everything is checked by default. Uncheck whole categories, projects or
+3. **Review the tree** - everything is checked by default. Uncheck whole categories, projects or
    individual folders. The figure at the top updates as you go.
-4. **Delete** — confirm the summary. Failures are listed with the reason and do not stop the run.
+4. **Delete** - confirm the summary. Failures are listed with the reason and do not stop the run.
 
 Right-click any project or folder in the results to reveal it in your file manager, copy its path,
 toggle its checkbox, or protect it from every future scan.
@@ -161,9 +161,9 @@ the five editor-state folders noted above.
 
 Preferences are stored by `electron-store`:
 
-- Windows — `%APPDATA%\Dev Cleaner\dev-cleaner-settings.json`
-- macOS — `~/Library/Application Support/Dev Cleaner/dev-cleaner-settings.json`
-- Linux — `~/.config/Dev Cleaner/dev-cleaner-settings.json`
+- Windows - `%APPDATA%\Dev Cleaner\dev-cleaner-settings.json`
+- macOS - `~/Library/Application Support/Dev Cleaner/dev-cleaner-settings.json`
+- Linux - `~/.config/Dev Cleaner/dev-cleaner-settings.json`
 
 The exact path is shown on the About screen.
 
@@ -232,16 +232,16 @@ own runners, so no local macOS machine is needed. GitHub hosts `windows-latest`,
 
 Two ways to run it:
 
-- **Manual** — Actions → *Build installers* → *Run workflow*. Installers are attached to the run as
+- **Manual** - Actions → _Build installers_ → _Run workflow_. Installers are attached to the run as
   downloadable artifacts. Use this to test packaging.
-- **Tagged** — push a version tag and the same builds are attached to a **draft** GitHub Release:
+- **Tagged** - push a version tag and the same builds are attached to a **draft** GitHub Release:
 
-  ```bash
-  npm version patch      # bumps package.json and creates the tag
-  git push --follow-tags
-  ```
+    ```bash
+    npm version patch      # bumps package.json and creates the tag
+    git push --follow-tags
+    ```
 
-  Review the draft under Releases, then publish it. Nothing goes public automatically.
+    Review the draft under Releases, then publish it. Nothing goes public automatically.
 
 The macOS job builds both architectures (`--x64 --arm64`), producing an Intel and an Apple Silicon
 dmg. `CSC_IDENTITY_AUTO_DISCOVERY: false` stops electron-builder looking for a signing certificate
@@ -254,11 +254,11 @@ packaging up to three times to ride out a dropped download.
 
 Unsigned builds work; they only cost users one extra click. Removing that click is a paid step:
 
-- **macOS** — an Apple Developer Program membership (99 USD/year). Export the *Developer ID
+- **macOS** - an Apple Developer Program membership (99 USD/year). Export the *Developer ID
   Application* certificate as a `.p12`, add `CSC_LINK` (base64) and `CSC_KEY_PASSWORD` as repository
   secrets, plus `APPLE_ID`, `APPLE_APP_SPECIFIC_PASSWORD` and `APPLE_TEAM_ID` for notarisation, then
   set `mac.notarize: true` in [electron-builder.yml](electron-builder.yml).
-- **Windows** — an OV or EV code-signing certificate (roughly 100–400 USD/year), supplied through
+- **Windows** - an OV or EV code-signing certificate (roughly 100–400 USD/year), supplied through
   the same `CSC_LINK` and `CSC_KEY_PASSWORD` secrets. EV certificates clear SmartScreen immediately;
   OV ones build reputation over time.
 

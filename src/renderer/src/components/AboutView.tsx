@@ -55,7 +55,7 @@ export function AboutView({ info, platform }: AboutViewProps): JSX.Element {
                 Dev Cleaner
               </h2>
               <span className="num text-[12px] text-content-subtle">
-                {info?.version ?? '—'}
+                {info?.version ?? '-'}
               </span>
             </div>
             <p className="mt-1.5 max-w-xl text-[12.5px] leading-relaxed text-content-muted">
@@ -126,7 +126,7 @@ export function AboutView({ info, platform }: AboutViewProps): JSX.Element {
             <Row label="Stored at">
               <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
                 <span className="selectable break-all font-mono text-[11.5px] leading-5 text-content-muted">
-                  {settingsPath || '—'}
+                  {settingsPath || '-'}
                 </span>
                 <Button
                   size="sm"
@@ -151,7 +151,7 @@ export function AboutView({ info, platform }: AboutViewProps): JSX.Element {
               ] as Array<[string, string | undefined]>
             ).map(([label, value]) => (
               <Row key={label} label={label}>
-                <span className="num text-[12px] leading-5 text-content">{value ?? '—'}</span>
+                <span className="num text-[12px] leading-5 text-content">{value ?? '-'}</span>
               </Row>
             ))}
           </Panel>

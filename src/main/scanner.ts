@@ -104,6 +104,8 @@ export async function scanDirectory({
   const isBlocked = (name: string): boolean =>
     neverTraverse.has(CASE_INSENSITIVE_FS ? name.toLowerCase() : name)
 
+  const normalizePath = (p: string): string => (CASE_INSENSITIVE_FS ? p.toLowerCase() : p)
+
   const protectedPaths = settings.protectedPaths.map((p) =>
     CASE_INSENSITIVE_FS ? p.toLowerCase() : p
   )
@@ -116,6 +118,7 @@ export async function scanDirectory({
   }
 
   const foundItems = new Map<string, ScanItem>()
+  const skipTraversal = new Set<string>()
   const errors: ScanError[] = []
   let scannedDirs = 0
 
@@ -189,8 +192,6 @@ export async function scanDirectory({
         if (matchesIndicator(entries, category.indicators)) active.set(category.id, job.dir)
       }
 
-      const flaggedHere = new Set<string>()
-
       const addItem = (
         path: string,
         name: string,
@@ -210,6 +211,7 @@ export async function scanDirectory({
           fileCount: 0,
           modifiedAt: 0
         })
+        skipTraversal.add(normalizePath(path))
         progress.foundItems = foundItems.size
         progress.recent.unshift({ path, name, categoryId })
         if (progress.recent.length > RECENT_LIMIT) progress.recent.length = RECENT_LIMIT
@@ -240,7 +242,6 @@ export async function scanDirectory({
             if (!nameEquals(entry.name, target.match)) continue
             if (entry.isSymbolicLink()) continue
             if (target.kind === 'dir' ? !entry.isDirectory() : !entry.isFile()) continue
-            flaggedHere.add(entry.name)
             addItem(join(job.dir, entry.name), entry.name, target, categoryId, projectPath)
           }
         }
@@ -253,11 +254,11 @@ export async function scanDirectory({
         const isLink = entry.isSymbolicLink()
         if (isLink && !settings.followSymlinks) continue
         if (!entry.isDirectory() && !isLink) continue
-        if (flaggedHere.has(entry.name)) continue
         if (isBlocked(entry.name)) continue
         if (!settings.scanHiddenDirs && entry.name.startsWith('.')) continue
 
         const child = join(job.dir, entry.name)
+        if (skipTraversal.has(normalizePath(child))) continue
         if (isProtected(child)) continue
         if (isLink) {
           try {

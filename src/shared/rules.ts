@@ -28,7 +28,7 @@ export const CATEGORIES: CategoryRule[] = [
     targets: [
       { id: 'node_modules', label: 'node_modules', match: 'node_modules', kind: 'dir', hint: 'Installed packages. Restored by npm install.' },
       { id: 'dist', label: 'dist', match: 'dist', kind: 'dir', hint: 'Bundler output.' },
-      { id: 'build', label: 'build', match: 'build', kind: 'dir', hint: 'Build output.' },
+      { id: 'build', label: 'build', match: 'build', kind: 'dir', hint: 'Build output.', caution: 'Electron Builder and some other tools use build/ for source assets such as icons and installer scripts rather than output.' },
       { id: 'next', label: '.next', match: '.next', kind: 'dir', hint: 'Next.js build cache and output.' },
       { id: 'nuxt', label: '.nuxt', match: '.nuxt', kind: 'dir', hint: 'Nuxt build output.' },
       { id: 'output', label: '.output', match: '.output', kind: 'dir', hint: 'Nitro and Nuxt 3 production output.' },
@@ -77,7 +77,6 @@ export const CATEGORIES: CategoryRule[] = [
       { id: 'app-debug', label: 'app/debug', match: 'app/debug', kind: 'dir', hint: 'Debug APKs written beside the app module.' },
       { id: 'app-release', label: 'app/release', match: 'app/release', kind: 'dir', hint: 'Signed release APK or AAB.', caution: 'This can be the exact artifact you shipped or uploaded. Gradle does not put it back until you build and sign again.' },
       { id: 'gradle', label: '.gradle', match: '.gradle', kind: 'dir', hint: 'Project-local Gradle cache and daemon state.' },
-      { id: 'idea', label: '.idea', match: '.idea', kind: 'dir', hint: 'IntelliJ and Android Studio project settings.', caution: 'Holds run configurations, code style and other local IDE state that is often not committed.', defaultEnabled: false },
       { id: 'kotlin', label: '.kotlin', match: '.kotlin', kind: 'dir', hint: 'Kotlin compiler session data.' },
       { id: 'cxx', label: '.cxx', match: '.cxx', kind: 'dir', hint: 'NDK build intermediates.' },
       { id: 'captures', label: 'captures', match: 'captures', kind: 'dir', hint: 'Profiler captures recorded by Android Studio.', caution: 'These are recordings you took by hand. Nothing regenerates them.', defaultEnabled: false }
@@ -91,7 +90,6 @@ export const CATEGORIES: CategoryRule[] = [
     targets: [
       { id: 'bin', label: 'bin', match: 'bin', kind: 'dir', hint: 'Compiled assemblies.' },
       { id: 'obj', label: 'obj', match: 'obj', kind: 'dir', hint: 'Build intermediates.' },
-      { id: 'vs', label: '.vs', match: '.vs', kind: 'dir', hint: 'Visual Studio local state and index.', caution: 'Holds window layout, breakpoints and the symbol index, which Visual Studio rebuilds slowly.', defaultEnabled: false },
       { id: 'test-results', label: 'TestResults', match: 'TestResults', kind: 'dir', hint: 'Test run output and coverage files.' }
     ]
   },
@@ -261,6 +259,40 @@ export const CATEGORIES: CategoryRule[] = [
       { id: 'zig-cache-dot', label: '.zig-cache', match: '.zig-cache', kind: 'dir', hint: 'Zig build cache.' },
       { id: 'zig-cache', label: 'zig-cache', match: 'zig-cache', kind: 'dir', hint: 'Zig build cache from older releases.' },
       { id: 'zig-out', label: 'zig-out', match: 'zig-out', kind: 'dir', hint: 'Zig install output.' }
+    ]
+  },
+  {
+    id: 'ide',
+    label: 'IDE / Editor',
+    indicators: [
+      '.idea',
+      '.vs',
+      '.vscode',
+      '.vscode-test',
+      '.history',
+      '.metals',
+      '.bloop',
+      '.bsp',
+      '.ccls-cache',
+      '.qtc_clangd',
+      '.sonarlint',
+      '.ionide',
+      '.fleet'
+    ],
+    accent: '#e879f9',
+    targets: [
+      { id: 'idea', label: '.idea', match: '.idea', kind: 'dir', hint: 'IntelliJ, Android Studio and other JetBrains project settings.', caution: 'Holds run configurations, code style and other local IDE state that is often not committed.', defaultEnabled: false },
+      { id: 'vs', label: '.vs', match: '.vs', kind: 'dir', hint: 'Visual Studio local state and index.', caution: 'Holds window layout, breakpoints and the symbol index, which Visual Studio rebuilds slowly.', defaultEnabled: false },
+      { id: 'fleet', label: '.fleet', match: '.fleet', kind: 'dir', hint: 'JetBrains Fleet workspace state.', caution: 'Holds run configurations and workspace layout, not only cache.', defaultEnabled: false },
+      { id: 'history', label: '.history', match: '.history', kind: 'dir', hint: 'Snapshots written by the VS Code Local History extension.', caution: 'These snapshots are your only copy of edits made outside a commit. Nothing regenerates them.', defaultEnabled: false },
+      { id: 'vscode-test', label: '.vscode-test', match: '.vscode-test', kind: 'dir', hint: 'VS Code builds downloaded by the extension test runner.' },
+      { id: 'metals', label: '.metals', match: '.metals', kind: 'dir', hint: 'Scala Metals server state and indexes.' },
+      { id: 'bloop', label: '.bloop', match: '.bloop', kind: 'dir', hint: 'Bloop build server configuration and compilation cache.' },
+      { id: 'bsp', label: '.bsp', match: '.bsp', kind: 'dir', hint: 'Build Server Protocol connection files. Regenerated by the build tool.' },
+      { id: 'ccls-cache', label: '.ccls-cache', match: '.ccls-cache', kind: 'dir', hint: 'ccls C and C++ index cache.' },
+      { id: 'qtc-clangd', label: '.qtc_clangd', match: '.qtc_clangd', kind: 'dir', hint: 'Qt Creator clangd index.' },
+      { id: 'sonarlint', label: '.sonarlint', match: '.sonarlint', kind: 'dir', hint: 'SonarLint analysis working directory.' },
+      { id: 'ionide', label: '.ionide', match: '.ionide', kind: 'dir', hint: 'Ionide F# tooling cache.' }
     ]
   },
   {
