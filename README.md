@@ -25,6 +25,10 @@ work/api/
 
 Everything else follows from that rule:
 
+- Generic names such as `build`, `dist`, `target`, `bin`, `obj` or `vendor` must sit **beside** the
+  marker, not merely below it. A Kotlin package `src/main/java/com/example/build` inside a Gradle
+  module is source code and is never listed; `app/build` next to `app/build.gradle.kts` is.
+
 - Deletion re-validates every path in the main process: it must sit inside the folder you scanned,
   must not be a filesystem root, and its name must appear in the built-in target list.
 - Symlinks and junctions are never deleted, and are not followed while scanning unless you opt in.

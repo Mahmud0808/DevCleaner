@@ -188,8 +188,13 @@ export async function scanDirectory({
       emit()
 
       const active = new Map(job.inherited)
+      // Categories whose marker file is in this very folder, not inherited from an ancestor.
+      const local = new Set<string>()
       for (const category of indicatorCategories) {
-        if (matchesIndicator(entries, category.indicators)) active.set(category.id, job.dir)
+        if (matchesIndicator(entries, category.indicators)) {
+          active.set(category.id, job.dir)
+          local.add(category.id)
+        }
       }
 
       const addItem = (
@@ -237,6 +242,10 @@ export async function scanDirectory({
             }
             continue
           }
+
+          // A generic name such as build only counts beside its marker, never as a nested
+          // source folder (e.g. a Kotlin package com/example/build inside a Gradle module).
+          if (target.adjacent && !local.has(categoryId)) continue
 
           for (const entry of entries) {
             if (!nameEquals(entry.name, target.match)) continue
